@@ -1,70 +1,77 @@
-# Getting Started with Create React App
+# React Localization - Internationalize with i18next
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- https://www.locize.com/blog/react-i18next
 
-## Available Scripts
+## create app
 
-In the project directory, you can run:
+```shell
+npx create-react-app my-app
+```
 
-### `npm start`
+## install packages
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```shell
+npm install i18next react-i18next i18next-browser-languagedetector
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## NOTE:
 
-### `npm test`
+- The tag <1> in this context is not a standard HTML or JSX tag. It's a placeholder used in internationalization (i18n) libraries, such as react-i18next or formatjs/react-intl, to mark up parts of a string for dynamic rendering, typically with React components.
+- <1> is a placeholder for a React component or tag to be inserted into a translatable string.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+It’s used in libraries like react-i18next for safe interpolation of components inside translated text.
 
-### `npm run build`
+```js
+//i18n.js
+const resources = {
+  en: {
+    translation: {
+      part1: "Edit <1>src/App.js</1> and save to reload.",
+    },
+  },
+};
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### then in react
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Here, `<1>` and `</1>` correspond to the second child element (index 1) passed to <Trans> (React children are zero-indexed). So <1> might render as a <code> tag or some other React element.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```js
+import { Trans } from "react-i18next";
 
-### `npm run eject`
+//...
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<Trans i18nKey="part1">
+  Edit <code>src/App.js</code> and save to reload.
+</Trans>;
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Separate translations from code
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- move locals to public
+- moved to `public/locales/en` etc
+- use json call it `translation.json`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- install `i18next-http-backend`
 
-## Learn More
+```shell
+npm install i18next-http-backend
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Adapt the i18n.js file to use the i18next-http-backend:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```js
+i18n
+  // i18next-http-backend
+  // loads translations from your server
+  // https://github.com/i18next/i18next-http-backend
+  .use(Backend);
+```
 
-### Code Splitting
+- Now the translations are loaded asynchronously, so make sure you wrap your app with a Suspense component to prevent this error: Uncaught Error: App suspended while rendering, but no fallback UI was specified.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```js
+<Suspense fallback="...is loading">
+  <App />
+</Suspense>
+```
