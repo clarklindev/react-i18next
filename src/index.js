@@ -9,9 +9,24 @@ import { Suspense } from "react";
 import "./i18n";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+const LoadingFallback = () => (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh", // Full height of the viewport
+      fontSize: "1.5rem",
+    }}
+  >
+    ...loading
+  </div>
+);
+
 root.render(
   <React.StrictMode>
-    <Suspense fallback="...is loading">
+    <Suspense fallback={<LoadingFallback />}>
       <App />
     </Suspense>
   </React.StrictMode>
